@@ -66,16 +66,3 @@ cleared the moment you join somewhere with a different pack set, or open a
 single-player world. If you find that strange, that's the trade: holding the
 pack for a few seconds in the menu is what removes the reload from every
 rejoin.
-
-## Versions
-
-Built separately per game version. The code is identical; only the dependency
-metadata differs.
-
-| file | Minecraft | Loader |
-|---|---|---|
-| `drmfrp-1.0.0+26.2.jar` | 26.2 | Fabric ≥ 0.19.3 |
-| `drmfrp-1.0.0+26.3.jar` | 26.3 | Fabric ≥ 0.19.5 |
-
-Client-side only — the server neither knows nor cares. No config, no commands,
-no keybinds. Requires Java 25. Fabric API is not required.
