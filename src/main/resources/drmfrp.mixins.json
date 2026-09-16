@@ -1,0 +1,9 @@
+{
+    "required": true,
+    "package": "com.mahirsn.drmfrp.mixin",
+    "compatibilityLevel": "JAVA_25",
+    "client": [
+        "DownloadedPackSourceMixin"
+    ],
+    "injectors": { "defaultRequire": 1 }
+}

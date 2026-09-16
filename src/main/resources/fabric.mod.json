@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "drmfrp",
+  "version": "${version}",
+  "name": "Dont reload my fucking resource packs",
+  "description": "Skips the resource reload when a server pushes packs you already have. Minecraft caches server packs by the UUID the server sends, so a server that makes up a new UUID every connection defeats it and every rejoin pays for a full reload of identical bytes. This compares the content hash instead.",
+  "authors": [
+    "mahirsn"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {},
+  "mixins": [
+    "drmfrp.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25"
+  },
+  "icon": "assets/drmfrp/icon.png",
+  "contact": {
+    "sources": "https://github.com/mahirsn/drmfrp"
+  }
+}
