@@ -5,6 +5,8 @@ import net.minecraft.client.resources.server.PackReloadConfig;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Remembers which server packs are currently applied, so a reload that would
@@ -29,13 +31,32 @@ public final class PackFingerprint {
     private PackFingerprint() {
     }
 
+    private static final Pattern SHA1 = Pattern.compile("[0-9a-fA-F]{40}");
+    private static final String UNHASHED = "unhashed:";
+
+    /**
+     * A pack whose file is not named by its hash -- a singleplayer world's
+     * resources.zip is the common one -- has no content identity to compare,
+     * and every world's is called the same thing. It gets a mark that never
+     * matches, so such a reload always runs.
+     */
     public static List<String> of(List<PackReloadConfig.IdAndPath> packs) {
         List<String> out = new ArrayList<>(packs.size());
         for (PackReloadConfig.IdAndPath p : packs) {
             Path file = p.path().getFileName();
-            out.add(file == null ? p.id().toString() : file.toString());
+            String name = file == null ? "" : file.toString();
+            out.add(SHA1.matcher(name).matches() ? name.toLowerCase() : UNHASHED + UUID.randomUUID());
         }
         return out;
+    }
+
+    public static boolean allHashed(List<String> fingerprints) {
+        for (String f : fingerprints) {
+            if (f.startsWith(UNHASHED)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -47,6 +68,9 @@ public final class PackFingerprint {
      * expensive, so holding on to them is what turns a rejoin into a no-op.
      */
     public static boolean canSkip(List<String> incoming) {
+        if (!allHashed(incoming)) {
+            return false;
+        }
         if (incoming.equals(applied) && !applied.isEmpty()) {
             return true;
         }
@@ -64,9 +88,17 @@ public final class PackFingerprint {
         return applied;
     }
 
-    /** Static state outlives a test method; each case needs a clean slate. */
-    static void resetForTests() {
+    /**
+     * After a failed reload nothing can be assumed about what is applied, and
+     * the next push has to reload for real rather than be skipped as a match.
+     */
+    public static void forget() {
         applied = List.of();
         hasServerPacks = false;
+    }
+
+    /** Static state outlives a test method; each case needs a clean slate. */
+    static void resetForTests() {
+        forget();
     }
 }

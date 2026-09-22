@@ -24,8 +24,12 @@ dependencies {
 test { useJUnitPlatform() }
 
 processResources {
-    inputs.property 'version', project.version
-    filesMatching('fabric.mod.json') { expand version: project.version }
+    // The target versions come from gradle.properties, so one source builds
+    // for 26.2 and for 26.3 (-Pminecraft_version=26.3 ...) without hand edits.
+    def props = [version: project.version, minecraft_version: project.minecraft_version,
+                 loader_version: project.loader_version]
+    inputs.properties props
+    filesMatching('fabric.mod.json') { expand props }
 }
 
 java {

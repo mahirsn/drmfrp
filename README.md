@@ -39,8 +39,9 @@ a no-op.
 - It does not stop downloads. If the server sends a pack, the game fetches it
   the way it always did. This only changes *when the game decides it has to
   reload*.
-- It does not cache anything Minecraft wasn't already caching. No extra folder,
-  no growing directory to clean up.
+- It does not cache anything Minecraft wasn't already caching. The only thing
+  it writes is `config/drmfrp-last-packs.txt`, a few lines naming the last
+  server's already-downloaded packs.
 - It does not lie to the server. The pack-accepted response is still sent, so
   servers with `require-resource-pack=true` behave normally.
 - It does not touch your own resource packs, only the ones a server pushes.
@@ -59,10 +60,22 @@ Every decision is logged, so you can see which path was taken:
 [drmfrp] pack set changed (1 -> 2), reloading
 ```
 
+## Across restarts
+
+The last server's packs are loaded at game startup, as part of the load the
+game does anyway. Launching and then joining that server used to mean two full
+reloads; now the join finds the packs already applied and skips its reload.
+
+A pack is only remembered after it has loaded successfully. If a remembered
+pack ever breaks the startup load, the mod drops it, deletes the list and lets
+the game recover — it will not fail the same way on the next launch. Packs the
+game has since cleaned out of its download cache are simply left out.
+
 ## Side effect worth knowing
 
-After you leave a server its pack stays applied while you're in the menu. It is
-cleared the moment you join somewhere with a different pack set, or open a
-single-player world. If you find that strange, that's the trade: holding the
-pack for a few seconds in the menu is what removes the reload from every
-rejoin.
+The last server's pack stays applied until you join somewhere that sends a
+different pack set: in the menu, in single-player, and on a server that sends
+no pack at all. That is the trade — keeping it is what removes the reload from
+every rejoin and from every launch. A single-player world's own
+`resources.zip` is never treated as a match, since every world's is called the
+same thing.
