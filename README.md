@@ -1,5 +1,15 @@
 # Dont reload my fucking resource packs
 
+## AI disclosure
+
+LLMs were used to build this project. I want to learn how everything here works and rewrite these mods without AI some day, but that isn't something I can do right now.
+
+That said, I made these mods for myself first. If one of them were pointless or clunky to use, I wouldn't be using it either.
+
+If you'd like to help make these mods better, go for it.
+
+---
+
 Skips the resource reload when a server pushes packs you already have.
 
 ## The problem
