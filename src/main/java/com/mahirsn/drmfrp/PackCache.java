@@ -66,6 +66,8 @@ public final class PackCache {
 
     private static boolean enabled;
     private static int size = 5;
+    private static boolean zipIndex;
+    private static boolean configLoaded;
 
     /** Server pack UUID to the SHA-1 its file is named by. */
     private static final Map<UUID, String> HASHES = new HashMap<>();
@@ -86,7 +88,11 @@ public final class PackCache {
     private PackCache() {
     }
 
-    public static void loadConfig() {
+    public static synchronized void loadConfig() {
+        if (configLoaded) {
+            return;
+        }
+        configLoaded = true;
         Path file = FabricLoader.getInstance().getConfigDir().resolve("drmfrp.properties");
         Properties p = new Properties();
         if (Files.isRegularFile(file)) {
@@ -102,9 +108,20 @@ public final class PackCache {
         } catch (NumberFormatException e) {
             size = 5;
         }
+        zipIndex = Boolean.parseBoolean(p.getProperty("experimental.zipIndex", "false"));
         if (enabled) {
             LOGGER.info("[drmfrp] experimental pack cache on, keeping {} pack set(s)", size);
         }
+        if (zipIndex) {
+            LOGGER.info("[drmfrp] experimental zip index on");
+        }
+    }
+
+    public static boolean zipIndexEnabled() {
+        if (!configLoaded) {
+            loadConfig();
+        }
+        return zipIndex;
     }
 
     public static boolean enabled() {

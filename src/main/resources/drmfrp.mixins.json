@@ -7,7 +7,8 @@
         "AtlasManagerMixin",
         "AtlasEntryMixin",
         "TextureAtlasMixin",
-        "ModelManagerMixin"
+        "ModelManagerMixin",
+        "FilePackResourcesMixin"
     ],
     "injectors": {
         "defaultRequire": 1
