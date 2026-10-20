@@ -1,6 +1,7 @@
 package com.mahirsn.drmfrp.mixin;
 
 import com.mahirsn.drmfrp.LastPacks;
+import com.mahirsn.drmfrp.PackCache;
 import com.mahirsn.drmfrp.PackFingerprint;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -75,11 +76,13 @@ public class DownloadedPackSourceMixin {
      */
     @Inject(method = "<init>", at = @At("RETURN"))
     private void drmfrp$preloadLastPacks(Minecraft minecraft, Path directory, GameConfig.UserData user, CallbackInfo ci) {
+        PackCache.loadConfig();
         try {
             List<PackReloadConfig.IdAndPath> last = LastPacks.load(drmfrp$lastPacksFile());
             if (last.isEmpty()) {
                 return;
             }
+            PackCache.rememberHashes(last);
             this.packSource = configureSource(loadRequestedPacks(last));
             PackFingerprint.remember(PackFingerprint.of(last));
             drmfrp$preloaded = true;
@@ -112,6 +115,8 @@ public class DownloadedPackSourceMixin {
         }
 
         LOGGER.info("[drmfrp] pack set changed ({} -> {}), reloading", PackFingerprint.applied().size(), incoming.size());
+        PackCache.rememberHashes(callbacks.packsToLoad());
+        PackCache.markServerReload();
         PackFingerprint.remember(incoming);
         drmfrp$preloaded = false;
         drmfrp$toSave = !incoming.isEmpty() && PackFingerprint.allHashed(incoming)
@@ -147,6 +152,7 @@ public class DownloadedPackSourceMixin {
     @Inject(method = {"onRecovery", "onRecoveryFailure"}, at = @At("HEAD"))
     private void drmfrp$forgetAfterFailure(CallbackInfo ci) {
         drmfrp$toSave = null;
+        PackCache.clear();
         PackFingerprint.forget();
         if (pendingReload == null && drmfrp$preloaded) {
             drmfrp$preloaded = false;

@@ -3,7 +3,13 @@
     "package": "com.mahirsn.drmfrp.mixin",
     "compatibilityLevel": "JAVA_25",
     "client": [
-        "DownloadedPackSourceMixin"
+        "DownloadedPackSourceMixin",
+        "AtlasManagerMixin",
+        "AtlasEntryMixin",
+        "TextureAtlasMixin",
+        "ModelManagerMixin"
     ],
-    "injectors": { "defaultRequire": 1 }
+    "injectors": {
+        "defaultRequire": 1
+    }
 }
