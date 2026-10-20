@@ -42,14 +42,55 @@ It also **keeps server packs loaded when you disconnect**. Dropping them there
 is what makes the next join expensive; holding them is what turns a rejoin into
 a no-op.
 
+## Faster reloads
+
+Minecraft reads a whole zip resource pack from start to end every time
+something asks for a folder inside it, and mods ask dozens of times per reload.
+drmfrp indexes each zip once per reload and answers from the index. The files
+returned and their order are the same; on a setup with a large zip pack a
+reload went from about 40 seconds to about 5.
+
+## Going back to a server
+
+The atlases and baked models of the last few servers' packs are kept in memory.
+Going back to one of those servers reuses them instead of building them again.
+Each kept server costs about 40 MB of video memory.
+
+## Packs that download every time
+
+Some servers send their pack without a hash, and Minecraft then downloads it
+on every join. drmfrp shows the copy from the last download while the new one
+comes in. The download still runs: the same content means no reload, a changed
+pack is loaded when the download ends, and a failed download removes the copy.
+
+## Settings
+
+`config/drmfrp.properties`, or the settings button in Mod Menu if you have it:
+
+```properties
+# The whole mod; off means vanilla behaviour
+enabled=true
+# Load the last server's packs at startup
+preloadLastServerPacks=true
+# Faster listing of zip packs
+zipIndex=true
+# Keep recent servers' atlases and models
+packCache=true
+# How many servers to keep
+packCacheSize=3
+# Show packs from disk while they download
+earlyApply=true
+```
+
 ## What it does not do
 
 - It does not stop downloads. If the server sends a pack, the game fetches it
   the way it always did. This only changes *when the game decides it has to
   reload*.
-- It does not cache anything Minecraft wasn't already caching. The only thing
-  it writes is `config/drmfrp-last-packs.txt`, a few lines naming the last
-  server's already-downloaded packs.
+- It does not keep extra copies of packs on disk. Besides its settings it
+  writes two small lists: `config/drmfrp-last-packs.txt` (the last server's
+  packs) and `config/drmfrp-url-cache.txt` (which downloaded file came from
+  which URL).
 - It does not lie to the server. The pack-accepted response is still sent, so
   servers with `require-resource-pack=true` behave normally.
 - It does not touch your own resource packs, only the ones a server pushes.
