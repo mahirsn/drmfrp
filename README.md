@@ -2,9 +2,7 @@
 
 ## AI disclosure
 
-LLMs were used to build this project. I want to learn how everything here works and rewrite these mods without AI some day, but that isn't something I can do right now.
-
-That said, I made these mods for myself first. If one of them were pointless or clunky to use, I wouldn't be using it either.
+LLMs were used in making this mod.
 
 If you'd like to help make these mods better, go for it.
 
