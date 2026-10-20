@@ -67,7 +67,8 @@ public final class ZipIndex {
     }
 
     public static boolean enabled() {
-        return PackCache.zipIndexEnabled() && !broken;
+        Config.load();
+        return Config.enabled && Config.zipIndex && !broken;
     }
 
     /** The pack's open zip, or null when it cannot be had; then vanilla handles the call. */

@@ -1,6 +1,5 @@
 package com.mahirsn.drmfrp;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.server.PackReloadConfig;
@@ -10,11 +9,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,11 +59,6 @@ public final class PackCache {
 
     private static final Pattern SERVER_PACK = Pattern.compile("server/[0-9A-F]{8}/([0-9a-f-]{36})");
 
-    private static boolean enabled;
-    private static int size = 5;
-    private static boolean zipIndex;
-    private static boolean earlyApply;
-    private static boolean configLoaded;
 
     /** Server pack UUID to the SHA-1 its file is named by. */
     private static final Map<UUID, String> HASHES = new HashMap<>();
@@ -89,52 +79,9 @@ public final class PackCache {
     private PackCache() {
     }
 
-    public static synchronized void loadConfig() {
-        if (configLoaded) {
-            return;
-        }
-        configLoaded = true;
-        Path file = FabricLoader.getInstance().getConfigDir().resolve("drmfrp.properties");
-        Properties p = new Properties();
-        if (Files.isRegularFile(file)) {
-            try (Reader r = Files.newBufferedReader(file)) {
-                p.load(r);
-            } catch (IOException e) {
-                LOGGER.warn("[drmfrp] could not read {}", file, e);
-            }
-        }
-        enabled = Boolean.parseBoolean(p.getProperty("experimental.packCache", "false"));
-        try {
-            size = Math.max(0, Integer.parseInt(p.getProperty("experimental.packCacheSize", "5").trim()));
-        } catch (NumberFormatException e) {
-            size = 5;
-        }
-        zipIndex = Boolean.parseBoolean(p.getProperty("experimental.zipIndex", "false"));
-        earlyApply = Boolean.parseBoolean(p.getProperty("experimental.earlyApply", "false"));
-        if (enabled) {
-            LOGGER.info("[drmfrp] experimental pack cache on, keeping {} pack set(s)", size);
-        }
-        if (zipIndex) {
-            LOGGER.info("[drmfrp] experimental zip index on");
-        }
-    }
-
-    public static boolean earlyApplyEnabled() {
-        if (!configLoaded) {
-            loadConfig();
-        }
-        return earlyApply;
-    }
-
-    public static boolean zipIndexEnabled() {
-        if (!configLoaded) {
-            loadConfig();
-        }
-        return zipIndex;
-    }
-
     public static boolean enabled() {
-        return enabled && size > 0;
+        Config.load();
+        return Config.enabled && Config.packCache;
     }
 
     public static void rememberHashes(List<PackReloadConfig.IdAndPath> packs) {
@@ -274,7 +221,7 @@ public final class PackCache {
 
     private static void evict() {
         Iterator<Entry> it = CACHE.values().iterator();
-        while (CACHE.size() > size && it.hasNext()) {
+        while (CACHE.size() > Config.packCacheSize && it.hasNext()) {
             Entry e = it.next();
             it.remove();
             closeGpu(e);

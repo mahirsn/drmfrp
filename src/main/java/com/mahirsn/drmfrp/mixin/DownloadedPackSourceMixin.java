@@ -1,5 +1,6 @@
 package com.mahirsn.drmfrp.mixin;
 
+import com.mahirsn.drmfrp.Config;
 import com.mahirsn.drmfrp.EarlyApply;
 import com.mahirsn.drmfrp.LastPacks;
 import com.mahirsn.drmfrp.PackCache;
@@ -104,7 +105,10 @@ public class DownloadedPackSourceMixin implements EarlyApply.Target {
      */
     @Inject(method = "<init>", at = @At("RETURN"))
     private void drmfrp$preloadLastPacks(Minecraft minecraft, Path directory, GameConfig.UserData user, CallbackInfo ci) {
-        PackCache.loadConfig();
+        Config.load();
+        if (!Config.enabled || !Config.preloadLastServerPacks) {
+            return;
+        }
         try {
             List<PackReloadConfig.IdAndPath> last = LastPacks.load(drmfrp$lastPacksFile());
             if (last.isEmpty()) {
@@ -156,6 +160,9 @@ public class DownloadedPackSourceMixin implements EarlyApply.Target {
 
     @Inject(method = "startReload", at = @At("HEAD"), cancellable = true)
     private void drmfrp$skipUnchangedReload(PackReloadConfig.Callbacks callbacks, CallbackInfo ci) {
+        if (!Config.enabled) {
+            return;
+        }
         for (PackReloadConfig.IdAndPath p : callbacks.packsToLoad()) {
             String url = EarlyApply.urlOf(this.manager, p.id());
             if (url != null && !url.startsWith("file:")) {

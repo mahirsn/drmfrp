@@ -95,7 +95,8 @@ public final class EarlyApply {
 
     /** A pack was pushed or accepted; decide shortly, once the server is done pushing. */
     public static void schedule(Object manager) {
-        if (!PackCache.earlyApplyEnabled()) {
+        Config.load();
+        if (!Config.enabled || !Config.earlyApply) {
             return;
         }
         int gen = ++generation;
