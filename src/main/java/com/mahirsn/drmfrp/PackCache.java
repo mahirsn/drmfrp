@@ -67,6 +67,7 @@ public final class PackCache {
     private static boolean enabled;
     private static int size = 5;
     private static boolean zipIndex;
+    private static boolean earlyApply;
     private static boolean configLoaded;
 
     /** Server pack UUID to the SHA-1 its file is named by. */
@@ -109,12 +110,20 @@ public final class PackCache {
             size = 5;
         }
         zipIndex = Boolean.parseBoolean(p.getProperty("experimental.zipIndex", "false"));
+        earlyApply = Boolean.parseBoolean(p.getProperty("experimental.earlyApply", "false"));
         if (enabled) {
             LOGGER.info("[drmfrp] experimental pack cache on, keeping {} pack set(s)", size);
         }
         if (zipIndex) {
             LOGGER.info("[drmfrp] experimental zip index on");
         }
+    }
+
+    public static boolean earlyApplyEnabled() {
+        if (!configLoaded) {
+            loadConfig();
+        }
+        return earlyApply;
     }
 
     public static boolean zipIndexEnabled() {
