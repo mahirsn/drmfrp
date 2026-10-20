@@ -59,7 +59,7 @@ public final class Config {
                 enabled, preloadLastServerPacks, zipIndex, packCache, packCacheSize, earlyApply);
     }
 
-    private static void save() {
+    public static void save() {
         String text = """
                 # Turns the whole mod on or off. When off, resource packs load exactly as in vanilla.
                 enabled=%s

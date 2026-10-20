@@ -9,7 +9,11 @@
   ],
   "license": "MIT",
   "environment": "client",
-  "entrypoints": {},
+  "entrypoints": {
+    "modmenu": [
+      "com.mahirsn.drmfrp.ModMenuIntegration"
+    ]
+  },
   "mixins": [
     "drmfrp.mixins.json"
   ],
@@ -21,5 +25,8 @@
   "icon": "assets/drmfrp/icon.png",
   "contact": {
     "sources": "https://github.com/mahirsn/drmfrp"
+  },
+  "suggests": {
+    "modmenu": "*"
   }
 }

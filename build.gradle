@@ -6,7 +6,10 @@ version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 base { archivesName = project.archives_base_name }
 
-repositories { mavenCentral() }
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.terraformersmc.com/releases/' }
+}
 
 dependencies {
     // 26.1+ ships unobfuscated with official Mojang names, so no `mappings`
@@ -15,6 +18,8 @@ dependencies {
     // Loom 1.17+ detects mod jars on its own, so no modImplementation.
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Only for the settings screen it shows; drmfrp runs without Mod Menu.
+    compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     testImplementation platform('org.junit:junit-bom:5.11.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

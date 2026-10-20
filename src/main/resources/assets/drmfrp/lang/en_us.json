@@ -1,0 +1,15 @@
+{
+  "drmfrp.options.title": "Don't Reload My Resource Packs",
+  "drmfrp.options.enabled": "Enabled",
+  "drmfrp.options.enabled.tooltip": "Turns the whole mod on or off. When off, resource packs load exactly as in vanilla.",
+  "drmfrp.options.preloadLastServerPacks": "Preload Last Server",
+  "drmfrp.options.preloadLastServerPacks.tooltip": "Loads the last server's packs together with the game at startup, so the first join does not need a second reload. Applies at the next launch.",
+  "drmfrp.options.zipIndex": "Zip Index",
+  "drmfrp.options.zipIndex.tooltip": "Lists files in zip resource packs from an index built once per reload, instead of reading the whole zip for every lookup. Same result, much faster reloads.",
+  "drmfrp.options.packCache": "Keep Server Packs",
+  "drmfrp.options.packCache.tooltip": "Keeps the atlases and models of recently visited servers' packs, so going back to one of them does not rebuild them.",
+  "drmfrp.options.packCacheSize": "Servers Kept",
+  "drmfrp.options.packCacheSize.tooltip": "How many other servers' packs to keep. Each one uses about 40 MB of video memory.",
+  "drmfrp.options.earlyApply": "Show While Downloading",
+  "drmfrp.options.earlyApply.tooltip": "While a server's pack downloads, shows the copy already on disk. The download still runs; if the pack changed, it is loaded when the download ends."
+}

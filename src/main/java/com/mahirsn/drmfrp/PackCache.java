@@ -219,6 +219,15 @@ public final class PackCache {
         hit = null;
     }
 
+    /** Applies a changed setting: drops what no longer fits, or everything when the cache is off. */
+    public static void trim() {
+        if (!enabled()) {
+            clear();
+        } else {
+            evict();
+        }
+    }
+
     private static void evict() {
         Iterator<Entry> it = CACHE.values().iterator();
         while (CACHE.size() > Config.packCacheSize && it.hasNext()) {
@@ -276,7 +285,8 @@ public final class PackCache {
                 // Emptied so the coming upload has nothing to close.
                 set(atlas, "texture", null);
                 set(atlas, "textureView", null);
-                set(atlas, "mipViews", new com.mojang.blaze3d.textures.GpuTextureView[0]);
+                // An empty array of whatever view type this version uses.
+                set(atlas, "mipViews", java.lang.reflect.Array.newInstance(field("mipViews").getType().getComponentType(), 0));
                 set(atlas, "sprites", List.of());
                 set(atlas, "animatedTexturesStates", List.of());
                 set(atlas, "texturesByName", Map.of());
@@ -304,14 +314,17 @@ public final class PackCache {
             holder.close();
         }
 
-        private static void set(TextureAtlas atlas, String name, Object value) throws ReflectiveOperationException {
+        private static Field field(String name) throws NoSuchFieldException {
             for (Field f : fields()) {
                 if (f.getName().equals(name)) {
-                    f.set(atlas, value);
-                    return;
+                    return f;
                 }
             }
             throw new NoSuchFieldException(name);
+        }
+
+        private static void set(TextureAtlas atlas, String name, Object value) throws ReflectiveOperationException {
+            field(name).set(atlas, value);
         }
     }
 }

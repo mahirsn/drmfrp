@@ -1,0 +1,15 @@
+{
+  "drmfrp.options.title": "Don't Reload My Resource Packs",
+  "drmfrp.options.enabled": "Etkin",
+  "drmfrp.options.enabled.tooltip": "Modu tamamen açar ya da kapatır. Kapalıyken kaynak paketleri vanilla'daki gibi yüklenir.",
+  "drmfrp.options.preloadLastServerPacks": "Son Sunucuyu Önden Yükle",
+  "drmfrp.options.preloadLastServerPacks.tooltip": "Son sunucunun paketlerini oyun açılırken yükler. Böylece ilk girişte ikinci bir reload gerekmez. Bir sonraki açılışta uygulanır.",
+  "drmfrp.options.zipIndex": "Zip Dizini",
+  "drmfrp.options.zipIndex.tooltip": "Zip paketlerin dosya listesini her reload'da bir kez okur ve sonraki aramaları bu listeden yapar. Sonuç aynı, reload çok daha hızlı.",
+  "drmfrp.options.packCache": "Sunucu Paketlerini Tut",
+  "drmfrp.options.packCache.tooltip": "Son girilen sunucuların paketlerinden oluşan atlas ve modelleri tutar. Bu sunuculara dönüşte bunlar yeniden hazırlanmaz.",
+  "drmfrp.options.packCacheSize": "Tutulan Sunucu",
+  "drmfrp.options.packCacheSize.tooltip": "Kaç sunucunun paketinin tutulacağını belirler. Her biri yaklaşık 40 MB video belleği kullanır.",
+  "drmfrp.options.earlyApply": "İndirirken Göster",
+  "drmfrp.options.earlyApply.tooltip": "Sunucunun paketi inerken diskteki kopyayı gösterir. İndirme yine yapılır; paket değiştiyse indirme bitince yeni paket yüklenir."
+}
